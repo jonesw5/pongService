@@ -1,10 +1,7 @@
 import os
-from flask import Flask, jsonify, request
-import requests
-from requests.auth import HTTPDigestAuth
+from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_httpauth import HTTPDigestAuth
-import datetime
 
 basedir = os.path.abspath(os.path.dirname(__file__))
 
@@ -39,23 +36,7 @@ class Role(db.Model):
     def __repr__(self):
         return '<Role %r>' % self.name
 
-@app.route('/')
-def hello_world():
-    return 'Hello World!'
 
-
-
-@app.route('/ping', methods=['GET'])
-@auth.login_required
-def ping_service():
-    hosturl = request.host_url
-    url = hosturl + '/pong'
-    auth = requests.auth.HTTPDigestAuth('vcu','rams')
-    response = requests.get(url, auth=auth)
-    elapTime = response.elapsed.total_seconds() * 1000
-    mes = str(elapTime) + ' milliseconds'
-    print(response.content)
-    return jsonify({'pingpong_t': mes})
 
 
 @app.route('/pong', methods=['GET'])
@@ -72,8 +53,6 @@ def page_not_found(e):
 @app.errorhandler(500)
 def internal_server_error(e):
     return jsonify({'message':'Something is broke'}), 500
-
-
 
 
 
